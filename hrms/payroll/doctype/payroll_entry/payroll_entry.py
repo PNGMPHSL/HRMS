@@ -702,6 +702,13 @@ class PayrollEntry(Document):
 		account_currency = frappe.db.get_value("Account", account, "account_currency")
 		if account_currency not in currencies:
 			currencies.append(account_currency)
+<<<<<<< HEAD
+=======
+		
+		if company_currency not in currencies:
+			currencies.append(company_currency)
+
+>>>>>>> 6ae42e3b (fix: enable multicurrency when company currency is different from component currencies)
 		if account_currency == company_currency:
 			conversion_rate = self.exchange_rate
 			exchange_rate = 1
