@@ -159,11 +159,15 @@ override_doctype_class = {
 
 doc_events = {
 	"User": {
+<<<<<<< HEAD
 		"validate": [
 			"erpnext.setup.doctype.employee.employee.validate_employee_role",
 			"hrms.overrides.employee_master.update_approver_user_roles",
 		],
 		"on_update": "erpnext.setup.doctype.employee.employee.update_user_permissions",
+=======
+		"validate": "erpnext.setup.doctype.employee.employee.validate_employee_role",
+>>>>>>> 2ae5cd33 (fix: remove useless hook)
 	},
 	"Company": {
 		"validate": "hrms.overrides.company.validate_default_accounts",
