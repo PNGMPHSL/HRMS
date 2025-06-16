@@ -584,13 +584,8 @@ class SalarySlip(TransactionBase):
 		)
 
 		for d in working_days_list:
-<<<<<<< HEAD
 			if relieving_date and d > relieving_date:
-				continue
-=======
-			if self.relieving_date and d > self.relieving_date:
 				break
->>>>>>> 4892cef2 (fix: inaccurate lwp calculation when partially paid leave exists)
 
 			leave = get_lwp_or_ppl_for_date(str(d), self.employee, holidays)
 			if leave:
@@ -603,28 +598,10 @@ class SalarySlip(TransactionBase):
 
 				if is_partially_paid_leave:
 					equivalent_lwp_count *= (
-						fraction_of_daily_salary_per_leave if fraction_of_daily_salary_per_leave else 1
+						(1 - fraction_of_daily_salary_per_leave) if fraction_of_daily_salary_per_leave else 1
 					)
 
-<<<<<<< HEAD
-				lwp += equivalent_lwp_count
-=======
-			equivalent_lwp_count = 0
-			fraction_of_daily_salary_per_leave = flt(leave.fraction_of_daily_salary_per_leave)
-
-			is_half_day_leave = False
-			if cint(leave.half_day) and (leave.half_day_date == d or leave.from_date == leave.to_date):
-				is_half_day_leave = True
-
-			equivalent_lwp_count = (1 - daily_wages_fraction_for_half_day) if is_half_day_leave else 1
-
-			if cint(leave.is_ppl):
-				equivalent_lwp_count *= (
-					(1 - fraction_of_daily_salary_per_leave) if fraction_of_daily_salary_per_leave else 1
-				)
-
 			lwp += equivalent_lwp_count
->>>>>>> 4892cef2 (fix: inaccurate lwp calculation when partially paid leave exists)
 
 		return lwp
 
