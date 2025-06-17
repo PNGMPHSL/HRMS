@@ -601,7 +601,7 @@ class SalarySlip(TransactionBase):
 						(1 - fraction_of_daily_salary_per_leave) if fraction_of_daily_salary_per_leave else 1
 					)
 
-			lwp += equivalent_lwp_count
+				lwp += equivalent_lwp_count
 
 		return lwp
 
