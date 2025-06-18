@@ -585,7 +585,7 @@ class SalarySlip(TransactionBase):
 
 		for d in working_days_list:
 			if relieving_date and d > relieving_date:
-				continue
+				break
 
 			leave = get_lwp_or_ppl_for_date(str(d), self.employee, holidays)
 			if leave:
@@ -598,7 +598,7 @@ class SalarySlip(TransactionBase):
 
 				if is_partially_paid_leave:
 					equivalent_lwp_count *= (
-						fraction_of_daily_salary_per_leave if fraction_of_daily_salary_per_leave else 1
+						(1 - fraction_of_daily_salary_per_leave) if fraction_of_daily_salary_per_leave else 1
 					)
 
 				lwp += equivalent_lwp_count
