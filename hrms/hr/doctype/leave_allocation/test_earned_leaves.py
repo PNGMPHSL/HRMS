@@ -595,6 +595,45 @@ class TestLeaveAllocation(FrappeTestCase):
 
 		self.assertEqual(total_leaves_allocated, 3.0)
 
+	def test_quaterly_earned_leaves_allocated_by_the_scheduler(self):
+		frappe.flags.current_date = get_year_start(getdate())
+
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+
+		# created policy assignment at the begining of the year so allocated leaces should be 0
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="First Day",
+			earned_leave_frequency="Quarterly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=get_year_ending(getdate()),
+		)[0]
+
+		# quarter passed 2 so leaves allocated should be 6
+		frappe.flags.current_date = add_months(get_year_start(getdate()), 7)
+
+		allocate_earned_leaves()
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+		self.assertEqual(total_leaves_allocated, 6)
+
+		# quarter three passed so leaves allocated should be 9
+		frappe.flags.current_date = add_months(get_year_start(getdate()), 10)
+		allocate_earned_leaves()
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+		self.assertEqual(total_leaves_allocated, 9)
+
 	def tearDown(self):
 		frappe.db.set_value("Employee", self.employee.name, "date_of_joining", self.original_doj)
 		frappe.db.set_value("Leave Type", self.leave_type, "max_leaves_allowed", 0)
