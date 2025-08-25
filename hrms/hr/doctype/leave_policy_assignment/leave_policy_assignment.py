@@ -3,7 +3,6 @@
 
 
 import json
-from datetime import datetime
 
 import frappe
 from frappe import _, bold
@@ -20,8 +19,6 @@ from frappe.utils import (
 	get_link_to_form,
 	get_quarter_ending,
 	get_quarter_start,
-	get_year_ending,
-	get_year_start,
 	getdate,
 	rounded,
 )
@@ -271,6 +268,8 @@ def calculate_periods_passed(
 
 
 def is_earned_leave_applicable_for_current_period(date_of_joining, allocate_on_day, earned_leave_frequency):
+	from hrms.hr.utils import get_semester_end, get_semester_start
+
 	date = getdate(frappe.flags.current_date) or getdate()
 	# If the date of assignment creation is >= the leave type's "Allocate On" date,
 	# then the current month should be considered
@@ -391,17 +390,3 @@ def get_leave_type_details():
 	for d in leave_types:
 		leave_type_details.setdefault(d.name, d)
 	return leave_type_details
-
-
-def get_semester_start(date):
-	if date.month <= 6:
-		return get_year_start(date)
-	else:
-		return add_months(get_year_start(date), 6)
-
-
-def get_semester_end(date):
-	if date.month > 6:
-		return get_year_ending(date)
-	else:
-		return add_months(get_year_ending(date), -6)
