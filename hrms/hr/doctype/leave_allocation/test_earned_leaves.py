@@ -810,6 +810,145 @@ class TestLeaveAllocation(FrappeTestCase):
 		# 2 full + 1/30*5 = 2.166 rounded to 0.25
 		self.assertEqual(total_leaves_allocated, 2.25)
 
+	def test_yearly_leaves_allocated_on_last_day_at_the_start_of_the_period(self):
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+
+		frappe.flags.current_date = get_year_start(getdate())
+		# 4 year leave policy
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="Last Day",
+			earned_leave_frequency="Yearly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=add_to_date(get_year_ending(getdate()), years=4),
+		)[0]
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+
+		self.assertEqual(total_leaves_allocated, 0.0)
+
+	def test_yearly_leaves_allocated_on_last_day_in_the_middle_of_the_period(self):
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+
+		frappe.flags.current_date = add_to_date(get_year_start(getdate()), years=2)
+		# 4 year leave policy
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="Last Day",
+			earned_leave_frequency="Yearly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=add_to_date(get_year_ending(getdate()), years=4),
+		)[0]
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+
+		self.assertEqual(total_leaves_allocated, 24.0)
+
+	def test_yearly_leaves_allocated_on_first_day_at_the_start_of_the_period(self):
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+
+		frappe.flags.current_date = get_year_start(getdate())
+		# 4 year leave policy
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="First Day",
+			earned_leave_frequency="Yearly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=add_to_date(get_year_ending(getdate()), years=4),
+		)[0]
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+
+		self.assertEqual(total_leaves_allocated, 12.0)
+
+	def test_yearly_leaves_allocated_by_scheduler(self):
+		frappe.flags.current_date = get_year_start(getdate())
+
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="First Day",
+			earned_leave_frequency="Yearly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=add_to_date(get_year_ending(getdate()), years=4),
+		)[0]
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+		self.assertEqual(total_leaves_allocated, 12)
+
+		frappe.flags.current_date = add_months(get_year_start(getdate()), 12)
+
+		allocate_earned_leaves()
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+		self.assertEqual(total_leaves_allocated, 24)
+
+	def test_yearly_leaves_allocated_prorated(self):
+		employee = frappe.get_doc("Employee", "_T-Employee-00002")
+		employee.date_of_joining = add_to_date(get_year_start(getdate()), months=7, days=15)
+		employee.save()
+
+		# make policy assignment on the same day
+		frappe.flags.current_date = add_to_date(get_year_start(getdate()), months=7, days=15)
+		assignment = make_policy_assignment(
+			employee,
+			allocate_on_day="Last Day",
+			earned_leave_frequency="Yearly",
+			annual_allocation=12,
+			assignment_based_on="Leave Period",
+			start_date=get_year_start(getdate()),
+			end_date=add_to_date(get_year_ending(getdate()), years=4),
+			rounding=0.25,
+		)[0]
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+
+		self.assertEqual(total_leaves_allocated, 0)
+
+		frappe.flags.current_date = get_year_ending(getdate())
+		allocate_earned_leaves()
+
+		total_leaves_allocated = frappe.get_value(
+			"Leave Allocation",
+			{"employee": employee.name, "leave_policy_assignment": assignment},
+			"total_leaves_allocated",
+		)
+		# 4 months full leave 1/30*15 = 0.5 rounded to 0.25
+		self.assertEqual(total_leaves_allocated, 4.5)
+
 	def tearDown(self):
 		frappe.db.set_value("Employee", self.employee.name, "date_of_joining", self.original_doj)
 		frappe.db.set_value("Employee", "_T-Employee-00002", "date_of_joining", self.original_doj)
