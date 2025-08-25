@@ -402,8 +402,10 @@ def update_previous_leave_allocation(allocation, annual_allocation, e_leave_type
 
 	if (
 		new_allocation != allocation.total_leaves_allocated
-		# annual allocation as per policy should not be exceeded
-		and new_allocation_without_cf <= annual_allocation
+		# annual allocation as per policy should not be exceeded except for yearly leaves
+		and (
+			new_allocation_without_cf <= annual_allocation or e_leave_type.earned_leave_frequency == "Yearly"
+		)
 	):
 		today_date = frappe.flags.current_date or getdate()
 
@@ -443,6 +445,7 @@ def get_monthly_earned_leave(
 					"Monthly": (get_first_day(today_date), get_last_day(today_date)),
 					"Quarterly": (get_quarter_start(today_date), get_quarter_ending(today_date)),
 					"Half-Yearly": (get_semester_start(today_date), get_semester_end(today_date)),
+					"Yearly": (get_year_start(today_date), get_year_ending(today_date)),
 				}.get(frequency)
 
 			earned_leaves = calculate_pro_rated_leaves(
@@ -531,6 +534,7 @@ def check_effective_date(from_date, today, frequency, allocate_on_day):
 			"Last Day": get_quarter_ending(today),
 		},
 		"Half-Yearly": {"First Day": get_semester_start(today), "Last Day": get_semester_end(today)},
+		"Yearly": {"First Day": get_year_start(today), "Last Day": get_year_ending(today)},
 	}[frequency][allocate_on_day]
 
 	if expected_date.day == today.day:
