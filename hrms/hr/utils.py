@@ -523,11 +523,11 @@ def check_effective_date(from_date, today, frequency, allocate_on_day):
 	if expected_date.day == today.day:
 		if frequency == "Monthly":
 			return True
-		elif frequency == "Quarterly" and rd.months % 3:
+		elif frequency == "Quarterly" and not rd.months % 3:
 			return True
-		elif frequency == "Half-Yearly" and rd.months % 6:
+		elif frequency == "Half-Yearly" and not rd.months % 6:
 			return True
-		elif frequency == "Yearly" and rd.months % 12:
+		elif frequency == "Yearly" and not rd.months % 12:
 			return True
 
 	return False
