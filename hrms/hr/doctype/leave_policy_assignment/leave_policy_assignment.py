@@ -195,12 +195,11 @@ class LeavePolicyAssignment(Document):
 		return current_date, from_date
 
 	def get_periods_passed(self, earned_leave_frequency, current_date, from_date, consider_current_period):
-		frequency_map = {
+		periods_per_year, months_per_period = {
 			"Monthly": (12, 1),
 			"Quarterly": (4, 3),
 			"Half-Yearly": (2, 6),
-		}
-		periods_per_year, months_per_period = frequency_map.get(earned_leave_frequency)
+		}.get(earned_leave_frequency)
 
 		periods_passed = calculate_periods_passed(
 			current_date, from_date, periods_per_year, months_per_period, consider_current_period
