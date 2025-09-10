@@ -135,6 +135,7 @@ class ShiftType(Document):
 		)
 
 	def _process(self, logs):
+
 		group_key = lambda x: (x["employee"], x["shift_start"])  # noqa
 		for key, group in groupby(sorted(logs, key=group_key), key=group_key):
 			single_shift_logs = list(group)
@@ -144,6 +145,13 @@ class ShiftType(Document):
 			if not self.should_mark_attendance(employee, attendance_date):
 				continue
 
+			working_hours_threshold_for_half_day = self.working_hours_threshold_for_half_day
+			working_hours_threshold_for_absent = self.working_hours_threshold_for_absent
+
+			if self.is_half_holiday(employee, attendance_date):
+				working_hours_threshold_for_half_day = self.working_hours_threshold_for_half_day // 2
+				working_hours_threshold_for_absent = self.working_hours_threshold_for_absent // 2
+
 			overtime_type = single_shift_logs[0].get("overtime_type")
 			(
 				attendance_status,
@@ -152,7 +160,9 @@ class ShiftType(Document):
 				early_exit,
 				in_time,
 				out_time,
-			) = self.get_attendance(single_shift_logs)
+			) = self.get_attendance(
+				single_shift_logs, working_hours_threshold_for_absent, working_hours_threshold_for_half_day
+			)
 
 			mark_attendance_and_link_log(
 				single_shift_logs,
@@ -179,6 +189,12 @@ class ShiftType(Document):
 				self.mark_absent_for_half_day_dates(employee)
 
 			frappe.db.commit()  # nosemgrep
+
+	def is_half_holiday(self, employee, attendance_date):
+		holiday_list = self.get_holiday_list(employee, attendance_date)
+		if is_holiday(holiday_list, attendance_date):
+			return False
+		return True
 
 	def get_employee_checkins(self) -> list[dict]:
 		return frappe.get_all(
@@ -207,7 +223,7 @@ class ShiftType(Document):
 			order_by="employee,time",
 		)
 
-	def get_attendance(self, logs):
+	def get_attendance(self, logs, working_hours_threshold_for_absent, working_hours_threshold_for_half_day):
 		"""Return attendance_status, working_hours, late_entry, early_exit, in_time, out_time
 		for a set of logs belonging to a single shift.
 		Assumptions:
@@ -232,15 +248,12 @@ class ShiftType(Document):
 		):
 			early_exit = True
 
-		if (
-			self.working_hours_threshold_for_absent
-			and total_working_hours < self.working_hours_threshold_for_absent
-		):
+		if working_hours_threshold_for_absent and total_working_hours < working_hours_threshold_for_absent:
 			return "Absent", total_working_hours, late_entry, early_exit, in_time, out_time
 
 		if (
-			self.working_hours_threshold_for_half_day
-			and total_working_hours < self.working_hours_threshold_for_half_day
+			working_hours_threshold_for_half_day
+			and total_working_hours < working_hours_threshold_for_half_day
 		):
 			return "Half Day", total_working_hours, late_entry, early_exit, in_time, out_time
 
@@ -360,8 +373,8 @@ class ShiftType(Document):
 
 		return list(set(assigned_employees) - set(inactive_employees))
 
-	def get_holiday_list(self, employee: str) -> str:
-		holiday_list_name = self.holiday_list or get_holiday_list_for_employee(employee, False)
+	def get_holiday_list(self, employee: str, date=None) -> str:
+		holiday_list_name = self.holiday_list or get_holiday_list_for_employee(employee, False, as_on=date)
 		return holiday_list_name
 
 	def should_mark_attendance(self, employee: str, attendance_date: str) -> bool:
@@ -371,7 +384,7 @@ class ShiftType(Document):
 			# since attendance should be marked on all days
 			return True
 
-		holiday_list = self.get_holiday_list(employee)
+		holiday_list = self.get_holiday_list(employee, attendance_date)
 		if is_holiday(holiday_list, attendance_date):
 			return False
 		return True
