@@ -9,9 +9,9 @@ from frappe.utils import getdate
 
 class HolidayListAssignment(Document):
 	def validate(self):
-		self.validate_from_and_to_dates(self)
-		self.validate_overlap_with_exisiting_assigment()
 		self.set_dates()
+		self.validate_from_and_to_dates()
+		self.validate_overlap_with_exisiting_assigment()
 
 	def validate_overlap_with_exisiting_assigment(self):
 		HLA = frappe.qb.DocType("Holiday List Assignment")
@@ -44,10 +44,12 @@ class HolidayListAssignment(Document):
 			self.to_date = relieving_date
 
 	def validate_from_and_to_dates(self):
+		if getdate(self.from_date) > getdate(self.to_date):
+			frappe.throw(_("From date cannot be less than to date."))
+
 		holiday_list_start, holiday_list_end = frappe.db.get_value(
 			"Holiday List", self.holiday_list, ["from_date", "to_date"]
 		)
-
 		if getdate(self.from_date) < holiday_list_start:
 			frappe.throw(_("Assignment from date cannot be before from date of Holiday list"))
 		if getdate(self.to_date) > holiday_list_end:
