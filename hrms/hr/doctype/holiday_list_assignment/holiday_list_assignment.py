@@ -24,7 +24,7 @@ class HolidayListAssignment(Document):
 		if holiday_list:
 			frappe.throw(
 				_("Holiday List Assignment for {0} already exists: {1}").format(
-					self.employee, get_link_to_form("Holiday List Assignment", holiday_list[0])
+					self.employee, get_link_to_form("Holiday List Assignment", holiday_list)
 				),
 				DuplicateAssignment,
 			)
