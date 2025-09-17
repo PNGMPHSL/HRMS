@@ -10,5 +10,8 @@ frappe.ui.form.on("Holiday List Assignment", {
 		frappe.db.get_value("Holiday List", frm.doc.holiday_list, "from_date", (r) => {
 			frm.set_value("from_date", r.from_date);
 		});
+		frappe.db.get_value("Holiday List", frm.doc.holiday_list, "to_date", (r) => {
+			frm.set_value("to_date", r.to_date);
+		});
 	},
 });
