@@ -1,13 +1,8 @@
 from dateutil.relativedelta import relativedelta
 
 import frappe
-<<<<<<< HEAD
 from frappe.tests.utils import FrappeTestCase
-from frappe.utils import get_year_ending, get_year_start, getdate
-=======
-from frappe.tests import IntegrationTestCase
 from frappe.utils import add_days, get_year_ending, get_year_start, getdate
->>>>>>> 5098e28e (refactor(tests): Replace days with dates in assertions)
 
 from erpnext.setup.doctype.employee.test_employee import make_employee
 from erpnext.setup.doctype.holiday_list.test_holiday_list import set_holiday_list
