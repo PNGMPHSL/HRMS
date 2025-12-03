@@ -111,20 +111,6 @@ class LeavePolicyAssignment(Document):
 			carry_forward = 0
 
 		new_leaves_allocated = self.get_new_leaves(annual_allocation, leave_details, date_of_joining)
-<<<<<<< HEAD
-		print(new_leaves_allocated)
-
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 36b24a87 (chore: remove print)
-		earned_leave_schedule = (
-			self.get_earned_leave_schedule(
-				annual_allocation, leave_details, date_of_joining, new_leaves_allocated
-			)
-			if leave_details.is_earned_leave
-			else []
-		)
 
 		if new_leaves_allocated == 0 and not leave_details.is_earned_leave:
 			text = _(
@@ -142,7 +128,6 @@ class LeavePolicyAssignment(Document):
 			).insert(ignore_permissions=True)
 			return None, 0
 
->>>>>>> 503353a6 (feat(leave-policy-assignment): skip leave allocation when New Leaves Allocated is 0)
 		allocation = frappe.get_doc(
 			dict(
 				doctype="Leave Allocation",
