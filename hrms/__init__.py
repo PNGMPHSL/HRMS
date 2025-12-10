@@ -1,6 +1,6 @@
 import frappe
 
-__version__ = "15.52.5"
+__version__ = "15.53.0"
 
 
 def refetch_resource(cache_key: str | list, user=None):
