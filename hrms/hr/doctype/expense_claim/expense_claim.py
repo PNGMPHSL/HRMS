@@ -229,6 +229,7 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 			)
 
 		for data in self.advances:
+<<<<<<< HEAD
 			gl_entry.append(
 				self.get_gl_dict(
 					{
@@ -243,6 +244,33 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 					}
 				)
 			)
+=======
+			if data.allocated_amount:
+				gl_dict = {
+					"account": data.advance_account,
+					"credit": data.base_allocated_amount,
+					"credit_in_account_currency": data.allocated_amount,
+					"credit_in_transaction_currency": data.allocated_amount,
+					"against": ",".join([d.default_account for d in self.expenses]),
+					"party_type": "Employee",
+					"party": self.employee,
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"advance_voucher_type": "Employee Advance",
+					"advance_voucher_no": data.employee_advance,
+					"transaction_exchange_rate": self.exchange_rate,
+					"cost_center": self.cost_center,
+					"project": self.project,
+				}
+				if not make_payment_via_je:
+					gl_dict.update(
+						{
+							"against_voucher_type": "Payment Entry",
+							"against_voucher": data.payment_entry,
+						}
+					)
+				gl_entry.append(self.get_gl_dict(gl_dict, account_currency=self.currency))
+>>>>>>> 6c91cd016 (fix: add accounting dimension for payment gl)
 
 		self.add_tax_gl_entries(gl_entry)
 
@@ -256,6 +284,12 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"credit": self.grand_total,
 						"credit_in_account_currency": self.grand_total,
 						"against": self.employee,
+<<<<<<< HEAD
+=======
+						"transaction_exchange_rate": self.exchange_rate,
+						"cost_center": self.cost_center,
+						"project": self.project,
+>>>>>>> 6c91cd016 (fix: add accounting dimension for payment gl)
 					},
 					item=self,
 				)
@@ -272,6 +306,12 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"debit_in_account_currency": self.grand_total,
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
+<<<<<<< HEAD
+=======
+						"transaction_exchange_rate": self.exchange_rate,
+						"cost_center": self.cost_center,
+						"project": self.project,
+>>>>>>> 6c91cd016 (fix: add accounting dimension for payment gl)
 					},
 					item=self,
 				)
