@@ -284,12 +284,8 @@
    "write": 1
   }
  ],
-<<<<<<< HEAD
- "sort_field": "modified",
-=======
  "row_format": "Dynamic",
  "sort_field": "creation",
->>>>>>> fb3f625c7 (feat(job-opening-template): auto fetch template values)
  "sort_order": "ASC",
  "states": [
   {
