@@ -241,6 +241,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"party": self.employee,
 						"against_voucher_type": "Employee Advance",
 						"against_voucher": data.employee_advance,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					}
 				)
 			)
@@ -257,6 +259,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"credit": self.grand_total,
 						"credit_in_account_currency": self.grand_total,
 						"against": self.employee,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					},
 					item=self,
 				)
@@ -273,6 +277,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"debit_in_account_currency": self.grand_total,
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					},
 					item=self,
 				)
