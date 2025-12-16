@@ -54,6 +54,7 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 		self.calculate_total_amount()
 		self.validate_advances()
 		self.set_expense_account(validate=True)
+		self.set_default_accounting_dimension()
 		self.calculate_taxes()
 		self.set_status()
 		self.validate_company_and_department()
@@ -240,6 +241,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"party": self.employee,
 						"against_voucher_type": "Employee Advance",
 						"against_voucher": data.employee_advance,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					}
 				)
 			)
@@ -256,6 +259,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"credit": self.grand_total,
 						"credit_in_account_currency": self.grand_total,
 						"against": self.employee,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					},
 					item=self,
 				)
@@ -272,6 +277,8 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 						"debit_in_account_currency": self.grand_total,
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+						"project": self.project,
 					},
 					item=self,
 				)
@@ -297,6 +304,26 @@ class ExpenseClaim(AccountsController, PWANotificationsMixin):
 					item=tax,
 				)
 			)
+
+	def set_default_accounting_dimension(self):
+		from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
+			get_checks_for_pl_and_bs_accounts,
+		)
+
+		for dim in get_checks_for_pl_and_bs_accounts():
+			if dim.company != self.company:
+				continue
+
+			field = frappe.scrub(dim.fieldname)
+
+			if self.meta.get_field(field):
+				if not self.get(field) and dim.mandatory_for_bs:
+					self.set(field, dim.default_dimension)
+
+			for row in self.get("expenses") or []:
+				if row.meta.get_field(field):
+					if not row.get(field) and dim.mandatory_for_pl:
+						row.set(field, dim.default_dimension)
 
 	def validate_account_details(self):
 		for data in self.expenses:
