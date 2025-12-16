@@ -229,12 +229,8 @@
   }
  ],
  "quick_entry": 1,
-<<<<<<< HEAD
- "sort_field": "modified",
-=======
  "row_format": "Dynamic",
  "sort_field": "creation",
->>>>>>> 65925a7c7 (fix: allow double digit precision for setting working hours threshold in shift type)
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1
