@@ -2,31 +2,22 @@
 # See license.txt
 
 import frappe
-<<<<<<< HEAD
 from frappe.tests.utils import FrappeTestCase
-from frappe.utils import add_days, nowdate
-=======
-from frappe.tests import IntegrationTestCase
 from frappe.utils import add_days, get_first_day, get_last_day, getdate, nowdate
 
 from erpnext.setup.doctype.employee.test_employee import make_employee
->>>>>>> 2a7ed36c9 (test: staffing plan details as fetched from requisition)
 
 from hrms.hr.doctype.staffing_plan.staffing_plan import ParentCompanyError, SubsidiaryCompanyError
 
 test_dependencies = ["Designation"]
 
 
-<<<<<<< HEAD
 class TestStaffingPlan(FrappeTestCase):
-=======
-class TestStaffingPlan(IntegrationTestCase):
 	def setUp(self):
 		for doctype in ["Staffing Plan", "Staffing Plan Detail"]:
 			frappe.db.delete(doctype)
 		make_company()
 
->>>>>>> 2a7ed36c9 (test: staffing plan details as fetched from requisition)
 	def test_staffing_plan(self):
 		frappe.db.set_value("Company", "_Test Company 3", "is_group", 1)
 		if frappe.db.exists("Staffing Plan", "Test"):
