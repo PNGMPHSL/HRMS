@@ -45,6 +45,7 @@ class AdditionalSalary(Document):
 				"from_date": ["<=", self.payroll_date or self.from_date],
 			},
 			"salary_structure",
+			order_by="from_date desc",
 		)
 
 		if not salary_structure:
