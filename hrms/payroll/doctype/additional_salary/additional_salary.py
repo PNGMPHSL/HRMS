@@ -66,9 +66,9 @@ class AdditionalSalary(Document):
 			if not is_structure_component:
 				self.overwrite_salary_structure_amount = 0
 				frappe.msgprint(
-					_("Salary Component: {0} not part of the Salary Structure: {1}").format(
-						self.salary_component, salary_structure
-					)
+					_(
+						"Overwrite Salary Structure Amount is disabled as the Salary Component: {0} not part of the Salary Structure: {1}"
+					).format(self.salary_component, salary_structure)
 				)
 
 	def validate_recurring_additional_salary_overlap(self):
