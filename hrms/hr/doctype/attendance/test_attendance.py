@@ -25,6 +25,9 @@ from hrms.hr.doctype.attendance.attendance import (
 	get_unmarked_days,
 	mark_attendance,
 )
+from hrms.hr.doctype.holiday_list_assignment.test_holiday_list_assignment import (
+	create_holiday_list_assignment,
+)
 from hrms.tests.test_utils import get_first_sunday
 
 
@@ -177,7 +180,9 @@ class TestAttendance(IntegrationTestCase):
 		employee = make_employee(
 			"test_unmarked_days@example.com", date_of_joining=add_days(attendance_date, -1)
 		)
-		frappe.db.set_value("Employee", employee, "holiday_list", self.holiday_list)
+		create_holiday_list_assignment(
+			employee=employee, holiday_list=self.holiday_list, company="_Test Company"
+		)
 
 		mark_attendance(employee, attendance_date, "Present")
 

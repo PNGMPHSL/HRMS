@@ -96,14 +96,18 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 
 
 def create_holiday_list_assignment(
-	employee, holiday_list, company="_Test Company", do_not_submit=False, **kwargs
+	employee, holiday_list, company="_Test Company", do_not_submit=False, from_date=None, to_date=None
 ):
 	hla = frappe.new_doc("Holiday List Assignment")
 	hla.employee = employee
 	hla.holiday_list = holiday_list
 	hla.company = company
-	if kwargs:
-		hla.update(kwargs)
+	if not from_date:
+		from_date = frappe.db.get_value("Holiday List", holiday_list, "from_date")
+	if not to_date:
+		to_date = frappe.db.get_value("Holiday List", holiday_list, "to_date")
+	hla.from_date = from_date
+	hla.to_date = to_date
 	hla.save()
 	if do_not_submit:
 		return hla
