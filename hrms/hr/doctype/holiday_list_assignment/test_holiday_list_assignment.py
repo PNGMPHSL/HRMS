@@ -9,6 +9,7 @@ from erpnext.setup.doctype.employee.test_employee import make_employee
 from hrms.payroll.doctype.salary_slip.test_salary_slip import make_holiday_list
 from hrms.payroll.doctype.salary_structure_assignment.salary_structure_assignment import DuplicateAssignment
 from hrms.tests.utils import HRMSTestSuite
+from hrms.utils.holiday_list import get_holiday_list_for_employee
 
 # On IntegrationTestCase, the doctype test records and all
 # link-field test record dependencies are recursively loaded
@@ -70,6 +71,28 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 		)
 		self.assertEqual(hla.from_date, date_of_joining)
 		self.assertEqual(hla.to_date, relieving_date)
+
+	def test_fetch_correct_holiday_list_assignment(self):
+		employee = make_employee("test_hla@example.com", company="_Test Company")
+		new_holiday_list = make_holiday_list(
+			list_name="Test HLA New", from_date=get_year_start(getdate()), to_date=get_year_ending(getdate())
+		)
+		create_holiday_list_assignment(
+			employee=employee,
+			holiday_list=self.holiday_list,
+			from_date=get_year_start(getdate()),
+			to_date=get_year_ending(getdate()),
+		)
+		create_holiday_list_assignment(
+			employee=employee,
+			holiday_list=new_holiday_list,
+			from_date=add_months(get_year_start(getdate()), 6),
+			to_date=get_year_ending(getdate()),
+		)
+		applicable_holiday_list = get_holiday_list_for_employee(
+			employee=employee, as_on=add_months(get_year_start(getdate()), 7)
+		)
+		self.assertEqual(applicable_holiday_list, "Test HLA New")
 
 
 def create_holiday_list_assignment(
