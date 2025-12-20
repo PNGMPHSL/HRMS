@@ -8,11 +8,12 @@
  "field_order": [
   "section_break_wnwa",
   "naming_series",
-  "employee",
+  "assigned_entity",
+  "assigned_to",
   "employee_name",
+  "employee_company",
   "amended_from",
   "column_break_lzvp",
-  "company",
   "holiday_list",
   "from_date",
   "to_date"
@@ -41,14 +42,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "employee",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Employee",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -60,6 +53,7 @@
    "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Employee Name",
    "read_only": 1
   },
@@ -80,19 +74,34 @@
    "reqd": 1
   },
   {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Company",
-   "options": "Company",
+   "fieldname": "assigned_entity",
+   "fieldtype": "Select",
+   "label": "Assigned Entity",
+   "options": "Employee\nCompany",
    "reqd": 1
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Assigned To",
+   "options": "assigned_entity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Employee Company",
+   "options": "Company",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-30 11:32:04.281692",
+ "modified": "2025-12-31 13:00:17.145359",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Holiday List Assignment",

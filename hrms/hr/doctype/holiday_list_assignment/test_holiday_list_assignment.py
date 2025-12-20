@@ -39,7 +39,8 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 		from_date = get_year_start(getdate())
 		to_date = get_year_ending(getdate())
 		create_holiday_list_assignment(
-			employee=self.employees[0].name,
+			"Employee",
+			assigned_to=self.employees[0].name,
 			holiday_list=self.holiday_list,
 			from_date=from_date,
 			to_date=to_date,
@@ -48,7 +49,8 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 		self.assertRaises(
 			DuplicateAssignment,
 			create_holiday_list_assignment,
-			employee=self.employees[0].name,
+			"Employee",
+			assigned_to=self.employees[0].name,
 			holiday_list=self.holiday_list,
 			from_date=from_date,
 			to_date=to_date,
@@ -64,7 +66,8 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 			relieving_date=relieving_date,
 		)
 		hla = create_holiday_list_assignment(
-			employee=employee,
+			"Employee",
+			assigned_to=employee,
 			holiday_list=self.holiday_list,
 			from_date=get_year_start(getdate()),
 			to_date=get_year_ending(getdate()),
@@ -78,13 +81,15 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 			list_name="Test HLA New", from_date=get_year_start(getdate()), to_date=get_year_ending(getdate())
 		)
 		create_holiday_list_assignment(
-			employee=employee,
+			"Employee",
+			assigned_to=employee,
 			holiday_list=self.holiday_list,
 			from_date=get_year_start(getdate()),
 			to_date=get_year_ending(getdate()),
 		)
 		create_holiday_list_assignment(
-			employee=employee,
+			"Employee",
+			assigned_to=employee,
 			holiday_list=new_holiday_list,
 			from_date=add_months(get_year_start(getdate()), 6),
 			to_date=get_year_ending(getdate()),
@@ -96,12 +101,19 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 
 
 def create_holiday_list_assignment(
-	employee, holiday_list, company="_Test Company", do_not_submit=False, from_date=None, to_date=None
+	assigned_entity,
+	assigned_to,
+	holiday_list,
+	company="_Test Company",
+	do_not_submit=False,
+	from_date=None,
+	to_date=None,
 ):
 	hla = frappe.new_doc("Holiday List Assignment")
-	hla.employee = employee
+	hla.assigned_entity = assigned_entity
+	hla.assigned_to = assigned_to
 	hla.holiday_list = holiday_list
-	hla.company = company
+	hla.employee_company = company
 	if not from_date:
 		from_date = frappe.db.get_value("Holiday List", holiday_list, "from_date")
 	if not to_date:

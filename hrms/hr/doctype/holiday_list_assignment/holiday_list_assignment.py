@@ -11,27 +11,28 @@ from hrms.payroll.doctype.salary_structure_assignment.salary_structure_assignmen
 
 class HolidayListAssignment(Document):
 	def validate(self):
-		self.set_dates()
+		if self.assigned_entity == "Employee":
+			self.set_dates()
 		self.validate_from_and_to_dates()
 		self.validate_exisiting_assignment()
 
 	def validate_exisiting_assignment(self):
 		holiday_list = frappe.db.exists(
 			"Holiday List Assignment",
-			{"employee": self.employee, "from_date": self.from_date, "docstatus": 1},
+			{"assigned_to": self.assigned_to, "from_date": self.from_date, "docstatus": 1},
 		)
 
 		if holiday_list:
 			frappe.throw(
 				_("Holiday List Assignment for {0} already exists: {1}").format(
-					self.employee, get_link_to_form("Holiday List Assignment", holiday_list)
+					self.assigned_to, get_link_to_form("Holiday List Assignment", holiday_list)
 				),
 				DuplicateAssignment,
 			)
 
 	def set_dates(self):
 		joining_date, relieving_date = frappe.db.get_value(
-			"Employee", self.employee, ["date_of_joining", "relieving_date"]
+			"Employee", self.assigned_to, ["date_of_joining", "relieving_date"]
 		)
 		if getdate(self.from_date) < joining_date:
 			self.from_date = joining_date

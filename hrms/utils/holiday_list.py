@@ -35,7 +35,7 @@ def get_holiday_list_for_employee(employee: str, raise_exception: bool = True, a
 	query = (
 		frappe.qb.from_(HLA)
 		.select(HLA.holiday_list)
-		.where(HLA.employee == employee)
+		.where(HLA.assigned_to == employee)
 		.where(HLA.from_date <= as_on)
 		.where(HLA.to_date >= as_on)
 		.where(HLA.docstatus == 1)
