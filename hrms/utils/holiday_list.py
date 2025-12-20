@@ -30,12 +30,27 @@ def get_holiday_dates_between(
 
 
 def get_holiday_list_for_employee(employee: str, raise_exception: bool = True, as_on=None) -> str:
+	holiday_list = get_assigned_holiday_list(employee, as_on)
+
+	if not holiday_list:
+		company = frappe.db.get_value("Employee", employee, "company")
+		holiday_list = get_assigned_holiday_list(company, as_on)
+
+	if not holiday_list and raise_exception:
+		frappe.throw(
+			_("Please assign Holiday List for Employee {0} or thier company {1}").format(employee, company)
+		)
+
+	return holiday_list
+
+
+def get_assigned_holiday_list(assigned_to: str, as_on=None) -> str:
 	as_on = frappe.utils.getdate(as_on)
 	HLA = frappe.qb.DocType("Holiday List Assignment")
 	query = (
 		frappe.qb.from_(HLA)
 		.select(HLA.holiday_list)
-		.where(HLA.assigned_to == employee)
+		.where(HLA.assigned_to == assigned_to)
 		.where(HLA.from_date <= as_on)
 		.where(HLA.to_date >= as_on)
 		.where(HLA.docstatus == 1)
@@ -44,9 +59,6 @@ def get_holiday_list_for_employee(employee: str, raise_exception: bool = True, a
 		.run()
 	)
 	holiday_list = query[0][0] if query else None
-
-	if not holiday_list and raise_exception:
-		frappe.throw(_("Please assign Holiday List for Employee {0}").format(employee))
 
 	return holiday_list
 

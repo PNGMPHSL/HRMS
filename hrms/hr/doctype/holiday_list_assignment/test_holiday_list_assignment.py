@@ -99,6 +99,12 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 		)
 		self.assertEqual(applicable_holiday_list, "Test HLA New")
 
+	def test_default_to_company_holiday_list_assignment(self):
+		create_holiday_list_assignment("Company", "_Test Company", self.holiday_list)
+		employee = make_employee("test_default_hla@example.com", company="_Test Company")
+		holiday_list = get_holiday_list_for_employee(employee, as_on=getdate())
+		self.assertEqual(holiday_list, self.holiday_list)
+
 
 def create_holiday_list_assignment(
 	assigned_entity,
