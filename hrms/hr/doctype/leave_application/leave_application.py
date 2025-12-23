@@ -6,7 +6,6 @@ import datetime
 import frappe
 from frappe import _
 from frappe.model.workflow import get_workflow_name
-from frappe.query_builder import Field
 from frappe.query_builder.functions import Max, Min, Sum
 from frappe.utils import (
 	add_days,
