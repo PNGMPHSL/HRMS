@@ -7,10 +7,10 @@
  "engine": "InnoDB",
  "field_order": [
   "employee_tab",
-  "employee_settings",
+  "employee_settings_section",
   "emp_created_by",
   "standard_working_hours",
-  "column_break_9",
+  "column_break_lrow",
   "retirement_age",
   "reminders_section",
   "column_break_11",
@@ -21,23 +21,22 @@
   "column_break_hyec",
   "sender",
   "sender_email",
-  "tab_2_tab",
-  "leave_and_expense_claim_settings",
+  "leaves_tab",
+  "leave_settings_section",
+  "auto_leave_encashment",
+  "leave_approver_mandatory_in_leave_application",
+  "prevent_self_leave_approval",
+  "show_leaves_of_all_department_members_in_calendar",
+  "column_break_29",
   "send_leave_notification",
   "leave_approval_notification_template",
   "leave_status_notification_template",
-  "leave_approver_mandatory_in_leave_application",
   "restrict_backdated_leave_application",
-  "prevent_self_leave_approval",
   "role_allowed_to_create_backdated_leave_application",
-  "column_break_29",
-  "show_leaves_of_all_department_members_in_calendar",
-  "auto_leave_encashment",
   "expenses_tab",
-  "expense_claim_settings_section",
+  "expenses_settings_section",
   "expense_approver_mandatory_in_expense_claim",
   "prevent_self_expense_approval",
-  "employee_advance_settings_section",
   "unlink_payment_on_cancellation_of_employee_advance",
   "shift_and_attendance_tab",
   "shift_settings_section",
@@ -46,9 +45,8 @@
   "allow_employee_checkin_from_mobile_app",
   "allow_geolocation_tracking",
   "tenure_tab",
-  "employee_exit_section",
+  "employee_exit_settings_section",
   "exit_questionnaire_web_form",
-  "column_break_34",
   "exit_questionnaire_notification_template",
   "recruitment_tab",
   "hiring_settings_section",
@@ -60,15 +58,9 @@
   "feedback_reminder_notification_template",
   "column_break_4",
   "hiring_sender",
-  "hiring_sender_email",
-  "payroll_tab"
+  "hiring_sender_email"
  ],
  "fields": [
-  {
-   "fieldname": "employee_settings",
-   "fieldtype": "Section Break",
-   "label": "Employee Settings"
-  },
   {
    "fieldname": "retirement_age",
    "fieldtype": "Data",
@@ -146,12 +138,6 @@
    "label": "Standard Working Hours"
   },
   {
-   "collapsible": 1,
-   "fieldname": "leave_and_expense_claim_settings",
-   "fieldtype": "Section Break",
-   "label": "Leave Settings"
-  },
-  {
    "default": "00:15:00",
    "depends_on": "send_interview_reminder",
    "fieldname": "remind_before",
@@ -159,7 +145,6 @@
    "label": "Remind Before"
   },
   {
-   "collapsible": 1,
    "fieldname": "reminders_section",
    "fieldtype": "Section Break",
    "label": "Reminders"
@@ -190,10 +175,6 @@
    "fieldname": "send_birthday_reminders",
    "fieldtype": "Check",
    "label": "Birthdays"
-  },
-  {
-   "fieldname": "column_break_9",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "column_break_11",
@@ -238,20 +219,10 @@
    "label": "Restrict Backdated Leave Application"
   },
   {
-   "fieldname": "hiring_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Hiring Settings"
-  },
-  {
    "default": "0",
    "fieldname": "check_vacancies",
    "fieldtype": "Check",
    "label": "Check Vacancies On Job Offer Creation"
-  },
-  {
-   "fieldname": "employee_exit_section",
-   "fieldtype": "Section Break",
-   "label": "Employee Exit Settings"
   },
   {
    "fieldname": "exit_questionnaire_web_form",
@@ -264,10 +235,6 @@
    "fieldtype": "Link",
    "label": "Exit Questionnaire Notification Template",
    "options": "Email Template"
-  },
-  {
-   "fieldname": "column_break_34",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "sender",
@@ -355,11 +322,6 @@
    "label": "Employee"
   },
   {
-   "fieldname": "tab_2_tab",
-   "fieldtype": "Tab Break",
-   "label": "Leaves"
-  },
-  {
    "fieldname": "expenses_tab",
    "fieldtype": "Tab Break",
    "label": "Expenses"
@@ -380,26 +342,45 @@
    "label": "Recruitment"
   },
   {
-   "fieldname": "payroll_tab",
+   "fieldname": "leaves_tab",
    "fieldtype": "Tab Break",
-   "label": "Payroll"
+   "label": "Leaves"
   },
   {
-   "fieldname": "expense_claim_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Expense Claim Settings"
+   "fieldname": "column_break_lrow",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "employee_advance_settings_section",
+   "fieldname": "expenses_settings_section",
    "fieldtype": "Section Break",
-   "label": "Employee Advance Settings"
+   "label": "Expenses Settings"
+  },
+  {
+   "fieldname": "employee_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Settings"
+  },
+  {
+   "fieldname": "leave_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Leave Settings"
+  },
+  {
+   "fieldname": "hiring_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Hiring Settings"
+  },
+  {
+   "fieldname": "employee_exit_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Exit Settings"
   }
  ],
  "icon": "fa fa-cog",
  "idx": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-12-23 18:08:49.952336",
+ "modified": "2025-12-29 16:25:06.271352",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "HR Settings",
