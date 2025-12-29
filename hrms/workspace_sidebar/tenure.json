@@ -71,7 +71,7 @@
    "collapsible": 1,
    "icon": "database",
    "indent": 1,
-   "keep_closed": 0,
+   "keep_closed": 1,
    "label": "Setup",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -154,7 +154,7 @@
    "collapsible": 1,
    "icon": "notepad-text",
    "indent": 1,
-   "keep_closed": 0,
+   "keep_closed": 1,
    "label": "Reports",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -209,7 +209,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-11-25 10:46:09.672027",
+ "modified": "2025-12-29 16:37:19.803616",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Tenure",
