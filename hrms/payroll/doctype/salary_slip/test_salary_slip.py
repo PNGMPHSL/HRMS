@@ -1984,10 +1984,6 @@ class TestSalarySlip(FrappeTestCase):
 
 		self.assertEqual(salary_slip.total_income_tax, total_income_tax)
 
-
-<<<<<<< HEAD
-class TestSalarySlipSafeEval(FrappeTestCase):
-=======
 	def test_salary_component_for_payment_days_zero(self):
 		from hrms.payroll.doctype.salary_structure.test_salary_structure import (
 			create_salary_structure_assignment,
@@ -2111,8 +2107,7 @@ class TestSalarySlipSafeEval(FrappeTestCase):
 		self.assertEqual(earnings["Allowance"], 0.0)
 
 
-class TestSalarySlipSafeEval(IntegrationTestCase):
->>>>>>> ef470b3e4 (fix(salary-slip): overwrite structure value with zero value)
+class TestSalarySlipSafeEval(FrappeTestCase):
 	def test_safe_eval_for_salary_slip(self):
 		TEST_CASES = {
 			"1+1": 2,
