@@ -1404,7 +1404,10 @@ class TestLeaveApplication(FrappeTestCase):
 		expire_allocation(leave_allocation, expiry_date=getdate())
 
 		leave_balance = get_leave_balance_on(
-			employee=employee.name, leave_type=leave_type.name, date=getdate()
+			employee=employee.name,
+			leave_type=leave_type.name,
+			date=getdate(),
+			consider_all_leaves_in_the_allocation_period=True,
 		)
 
 		self.assertEqual(leave_balance, 0)
@@ -1426,12 +1429,12 @@ class TestLeaveApplication(FrappeTestCase):
 			leave_type=leave_type,
 			from_date=previous_month_start,
 			to_date=previous_month_start,
-			posting_date=add_days(previous_month_end, -1),
+			posting_date=previous_month_end,
 			status="Approved",
 		)
 		doc.save()
 		doc.submit()
-		self.assertEqual(get_leave_balance_on(employee, leave_type, add_days(previous_month_end, -1)), 9)
+		self.assertEqual(get_leave_balance_on(employee, leave_type, previous_month_end), 9)
 
 	def test_status_on_discard(self):
 		make_allocation_record()
