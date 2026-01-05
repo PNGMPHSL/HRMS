@@ -1412,8 +1412,6 @@ class TestLeaveApplication(FrappeTestCase):
 
 		self.assertEqual(leave_balance, 0)
 
-<<<<<<< HEAD
-=======
 	def test_backdated_application_after_expiry(self):
 		employee = get_employee().name
 		previous_month_start = get_first_day(add_months(getdate(), -1))
@@ -1436,15 +1434,6 @@ class TestLeaveApplication(FrappeTestCase):
 		doc.submit()
 		self.assertEqual(get_leave_balance_on(employee, leave_type, previous_month_end), 9)
 
-	def test_status_on_discard(self):
-		make_allocation_record()
-		application = self.get_application(self.leave_applications[0])
-		application.save()
-		application.discard()
-		application.reload()
-		self.assertEqual(application.status, "Cancelled")
-
->>>>>>> d250ee81f (test: test backdated leave application after leaves have expired)
 
 def create_carry_forwarded_allocation(employee, leave_type, date=None):
 	date = date or nowdate()
