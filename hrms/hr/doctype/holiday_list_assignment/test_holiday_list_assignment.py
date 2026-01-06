@@ -111,28 +111,36 @@ class IntegrationTestHolidayListAssignment(HRMSTestSuite):
 def create_holiday_list_assignment(
 	assigned_entity,
 	assigned_to,
-	holiday_list,
+	holiday_list="Salary Slip Test Holiday List",
 	company="_Test Company",
 	do_not_submit=False,
 	from_date=None,
 	to_date=None,
 ):
-	hla = frappe.new_doc("Holiday List Assignment")
-	hla.assigned_entity = assigned_entity
-	hla.assigned_to = assigned_to
-	hla.holiday_list = holiday_list
-	hla.employee_company = company
-	if not from_date:
-		from_date = frappe.db.get_value("Holiday List", holiday_list, "from_date")
-	if not to_date:
-		to_date = frappe.db.get_value("Holiday List", holiday_list, "to_date")
-	hla.from_date = from_date
-	hla.to_date = to_date
-	hla.save()
-	if do_not_submit:
-		return hla
-	hla.submit()
-
+	if not frappe.db.exists(
+		"Holiday List Assignment",
+		{"assigned_entity": assigned_entity, "assigned_to": assigned_to, "holiday_list": holiday_list},
+	):
+		hla = frappe.new_doc("Holiday List Assignment")
+		hla.assigned_entity = assigned_entity
+		hla.assigned_to = assigned_to
+		hla.holiday_list = holiday_list
+		hla.employee_company = company
+		if not from_date:
+			from_date = frappe.db.get_value("Holiday List", holiday_list, "from_date")
+		if not to_date:
+			to_date = frappe.db.get_value("Holiday List", holiday_list, "to_date")
+		hla.from_date = from_date
+		hla.to_date = to_date
+		hla.save()
+		if do_not_submit:
+			return hla
+		hla.submit()
+	else:
+		hla = frappe.get_doc(
+			"Holiday List Assignment",
+			{"assigned_entity": assigned_entity, "assigned_to": assigned_to, "holiday_list": holiday_list},
+		)
 	return hla
 
 
@@ -154,9 +162,9 @@ def assign_holiday_list(holiday_list, company_name):
 				HolidayList.from_date,
 				HolidayList.to_date,
 			)
-			.where(HolidayListAssignment.assined_to == company_name)
+			.where(HolidayListAssignment.assigned_to == company_name)
 			.limit(1)
-		).run(as_dict=True)
+		).run(as_dict=True)[0]
 		from_date, to_date = frappe.get_value("Holiday List", holiday_list, ["from_date", "to_date"])
 		frappe.db.set_value(
 			"Holiday List Assignment",

@@ -29,6 +29,46 @@ def get_holiday_dates_between(
 	return query.run(pluck=True)
 
 
+def get_holiday_dates_between_range(
+	assigned_to: str,
+	start_date: str,
+	end_date: str,
+	skip_weekly_offs: bool = False,
+	select_weekly_offs: bool = False,
+) -> list:
+	start_date = frappe.utils.getdate(start_date)
+	end_date = frappe.utils.getdate(end_date)
+
+	from_holiday_list = get_assigned_holiday_list(assigned_to, as_on=start_date, get_date_details=True)
+	to_holiday_list = get_assigned_holiday_list(assigned_to, as_on=end_date, get_date_details=True)
+
+	if from_holiday_list.holiday_list == to_holiday_list.holiday_list:
+		return get_holiday_dates_between(
+			holiday_list=from_holiday_list.holiday_list,
+			start_date=start_date,
+			end_date=end_date,
+			select_weekly_off=select_weekly_offs,
+			skip_weekly_offs=skip_weekly_offs,
+		)
+	else:
+		return set(
+			get_holiday_dates_between(
+				holiday_list=from_holiday_list.holiday_list,
+				start_date=start_date,
+				end_date=from_holiday_list.end_date,
+				select_weekly_off=select_weekly_offs,
+				skip_weekly_offs=skip_weekly_offs,
+			)
+			+ get_holiday_dates_between(
+				holiday_list=to_holiday_list.holiday_list,
+				start_date=to_holiday_list.start_date,
+				end_date=end_date,
+				select_weekly_off=select_weekly_offs,
+				skip_weekly_offs=skip_weekly_offs,
+			)
+		)
+
+
 def get_holiday_list_for_employee(employee: str, raise_exception: bool = True, as_on=None) -> str:
 	holiday_list = get_assigned_holiday_list(employee, as_on)
 
@@ -38,13 +78,13 @@ def get_holiday_list_for_employee(employee: str, raise_exception: bool = True, a
 
 	if not holiday_list and raise_exception:
 		frappe.throw(
-			_("Please assign Holiday List for Employee {0} or thier company {1}").format(employee, company)
+			_("Please assign Holiday List for Employee {0} or their company {1}").format(employee, company)
 		)
 
 	return holiday_list
 
 
-def get_assigned_holiday_list(assigned_to: str, as_on=None) -> str:
+def get_assigned_holiday_list(assigned_to: str, as_on=None, get_date_details: bool = False) -> str:
 	as_on = frappe.utils.getdate(as_on)
 	HLA = frappe.qb.DocType("Holiday List Assignment")
 	query = (
@@ -56,9 +96,14 @@ def get_assigned_holiday_list(assigned_to: str, as_on=None) -> str:
 		.where(HLA.docstatus == 1)
 		.orderby(HLA.from_date, order=frappe.qb.desc)
 		.limit(1)
-		.run()
 	)
-	holiday_list = query[0][0] if query else None
+	if get_date_details:
+		query.select(HLA.start_date, HLA.end_date)
+		holiday_list = query.run(as_dict=True)
+		return holiday_list
+
+	result = query.run() if query else None
+	holiday_list = result[0][0] if result else None
 
 	return holiday_list
 

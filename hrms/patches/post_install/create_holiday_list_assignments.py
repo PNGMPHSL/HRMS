@@ -15,10 +15,11 @@ def execute():
 
 
 def create_holiday_list_assignment(entity_details):
-	hla = frappe.new_doc("Holiday List Assignment")
-	hla.update(entity_details)
-	hla.save()
-	hla.submit()
+	if not frappe.db.exists("Holiday List Assignment", entity_details):
+		hla = frappe.new_doc("Holiday List Assignment")
+		hla.update(entity_details)
+		hla.save()
+		hla.submit()
 
 
 def get_employee_holiday_details():
