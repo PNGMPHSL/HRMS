@@ -113,6 +113,8 @@ class LeaveApplication(Document, PWANotificationsMixin):
 		self.create_leave_ledger_entry()
 		# create a reverse ledger entry for backdated leave applications for whom expiry entry already exists
 		leave_allocation = self.get_leave_allocation()
+		if not leave_allocation:
+			return
 		to_date = leave_allocation.get("to_date")
 		can_expire = not frappe.db.get_value("Leave Type", self.leave_type, "is_carry_forward")
 
