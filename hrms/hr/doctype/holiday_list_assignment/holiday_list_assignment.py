@@ -36,7 +36,7 @@ class HolidayListAssignment(Document):
 					get_link_to_form("Holiday List Assignment", holiday_list),
 				),
 				DuplicateAssignment,
-				title="Duplicate Assignment",
+				title=_("Duplicate Assignment"),
 			)
 
 	def validate_assignment_start_date(self):
