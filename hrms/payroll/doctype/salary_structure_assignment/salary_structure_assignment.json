@@ -208,30 +208,6 @@
    "fieldtype": "Section Break",
    "hidden": 1,
    "label": "Opening Balances"
-<<<<<<< HEAD
-=======
-  },
-  {
-   "fieldname": "employee_benefits_section",
-   "fieldtype": "Section Break",
-   "label": "Employee Benefits"
-  },
-  {
-   "fieldname": "employee_benefits",
-   "fieldtype": "Table",
-   "label": "Flexible Benefits",
-   "options": "Employee Benefit Detail"
-  },
-  {
-   "fetch_from": "salary_structure.max_benefits",
-   "fetch_if_empty": 1,
-   "fieldname": "max_benefits",
-   "fieldtype": "Currency",
-   "label": "Maximum Benefit Amount"
-  },
-  {
-   "fieldname": "column_break_kjvm",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "salary_structure.leave_encashment_amount_per_day",
@@ -240,16 +216,11 @@
    "fieldtype": "Currency",
    "label": "Leave Encashment Amount Per Day",
    "options": "currency"
->>>>>>> 23b44296a (feat(salary-structure-assignment): leave encashment amount per day field added)
   }
  ],
  "is_submittable": 1,
  "links": [],
-<<<<<<< HEAD
- "modified": "2024-10-18 18:06:42.013701",
-=======
  "modified": "2026-01-09 11:52:07.106968",
->>>>>>> 23b44296a (feat(salary-structure-assignment): leave encashment amount per day field added)
  "modified_by": "Administrator",
  "module": "Payroll",
  "name": "Salary Structure Assignment",

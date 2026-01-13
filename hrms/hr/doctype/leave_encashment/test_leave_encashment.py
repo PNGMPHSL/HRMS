@@ -419,15 +419,6 @@ class TestLeaveEncashment(FrappeTestCase):
 		args.update(kwargs)
 		return create_leave_encashment(**args)
 
-<<<<<<< HEAD
-=======
-	def test_status_on_discard(self):
-		encashment = self.create_test_leave_encashment()
-		encashment.save()
-		encashment.discard()
-		encashment.reload()
-		self.assertEqual(encashment.status, "Cancelled")
-
 	def test_leave_encashment_based_on_salary_structure_assignment(self):
 		from hrms.payroll.doctype.salary_structure.test_salary_structure import (
 			create_salary_structure_assignment,
@@ -455,7 +446,6 @@ class TestLeaveEncashment(FrappeTestCase):
 		self.assertTrue(leave_encashment.encashment_days, 5)
 		self.assertEqual(leave_encashment.encashment_amount, 250)
 
->>>>>>> 23b44296a (feat(salary-structure-assignment): leave encashment amount per day field added)
 
 def create_leave_encashment(**args):
 	if args:
