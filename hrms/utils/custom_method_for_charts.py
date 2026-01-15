@@ -17,7 +17,7 @@ def get_upcoming_holidays():
 		holiday_list = get_assigned_holiday_list(default_company, as_on=getdate())
 
 	if not holiday_list:
-		return
+		return 0
 
 	month_start = get_first_day(getdate())
 	month_end = get_last_day(getdate())
