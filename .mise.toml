@@ -1,0 +1,52 @@
+# mise configuration for PNGMPHSL HRMS
+# https://mise.jdx.dev/
+
+[tools]
+python = "3.14.0"
+node = "24.0.0"
+yarn = "1.22.22"
+
+[env]
+# Python environment
+PYTHONPATH = "."
+VIRTUAL_ENV = "{{config_root}}/.venv"
+
+# Node environment
+NODE_ENV = "development"
+
+[tasks.setup]
+description = "Setup development environment"
+run = """
+#!/bin/bash
+echo "Setting up HRMS development environment..."
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install pre-commit ruff mypy
+npm install -g markdownlint-cli
+pre-commit install
+echo "Setup complete!"
+"""
+
+[tasks.lint]
+description = "Run all linters"
+run = "pre-commit run --all-files"
+
+[tasks.format]
+description = "Format code"
+run = """
+ruff format .
+ruff check --fix .
+prettier --write "**/*.{js,ts,vue,css,scss}"
+"""
+
+[tasks.test]
+description = "Run tests"
+run = "pytest"
+
+[tasks.build-frontend]
+description = "Build frontend apps"
+run = """
+cd frontend && npm run build
+cd ../roster && npm run build
+"""
